@@ -57,14 +57,11 @@ class PongGame(Widget):
         if (self.ball.x < 0) or (self.ball.right > self.width):
             self.ball.velocity_x *= -1
 
-        # went off to a side to score a point (player 2 in invincible?!):
-        player2Offset = self.width - self.player2.x + 1
-        #print("player2Offset:", player2Offset)
-        #print(f'right bound: {self.width - player2Offset}, position: {self.ball.x}')
+        # went off to a side to score a point:
         if self.ball.x < self.x:
             self.player2.score += 1
             self.serve_ball(vel=(4, 0))
-        if self.ball.x > (self.width - player2Offset): #account for width of player2 paddle
+        if self.ball.x + 50 > self.width: #account for width of the ball
             self.player1.score += 1
             self.serve_ball(vel=(-4, 0))
 
