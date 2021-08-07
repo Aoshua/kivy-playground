@@ -9,7 +9,60 @@
 #MainWidget:
 #BoxLayoutExample:
 #AnchorLayoutExample:
-GridLayoutExample:
+#GridLayoutExample:
+#StackLayoutExample:
+# ScrollViewExample:
+#PageLayoutExample:
+WidgetsExample:
+
+
+<WidgetsExample>
+    cols: 3
+    Button:
+        text: "Click here"
+        # self refers to GridLayout where root is the WidgetsExample class
+        on_press: root.on_button_click()
+    Label:
+        text: root.my_text # this is bound, like vue
+        font_name: "fonts/Lcd.ttf"
+        font_size: "80dp"
+        color: "#1B998B"
+
+<PageLayoutExample@PageLayout>:
+    MainWidget:
+    BoxLayoutExample:
+    AnchorLayoutExample:
+    StackLayoutExample:
+
+<ScrollViewExample@ScrollView>: # can only have one child
+    StackLayoutExample:
+        size_hint: 1, None
+        height: self.minimum_height
+
+
+<StackLayoutExample>:
+    # left-right, top-bottom
+    # orientation: "rl-bt"
+    # padding: ("20dp", "40dp", "20dp", "20dp")
+    # spacing: "20dp", "20dp"
+    # Button:
+    #     text: "A"
+    #     size_hint: .2, .2
+    # Button:
+    #     text: "B"
+    #     size_hint: .2, .2
+    # Button:
+    #     text: "C"
+    #     size_hint: .2, .2
+    # Button:
+    #     text: "D"
+    #     size_hint: .2, .2
+    # Button:
+    #     text: "E"
+    #     size_hint: .2, .2
+    # Button:
+    #     text: "F"
+    #     size_hint: .2, .2
 
 <GridLayoutExample@GridLayout>:
     # needs "rows" or "cols"
