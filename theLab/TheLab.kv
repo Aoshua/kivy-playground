@@ -1,0 +1,86 @@
+#:kivy 2.0.0
+
+# Don't use pixels because different screens have different
+# pixel densities! Instead use "dp" for density pixels.
+# As a reference point, 40dp width is about the width of
+# your index finger.
+
+# HERE we are specifying which widget is shown
+#MainWidget:
+#BoxLayoutExample:
+#AnchorLayoutExample:
+GridLayoutExample:
+
+<GridLayoutExample@GridLayout>:
+    # needs "rows" or "cols"
+    # cols: 3
+    rows: 2
+    Button:
+        text: "A"
+        size_hint: None, 1
+        width: "60dp"
+    BoxLayoutExample:
+    Button:
+        text: "C"
+    Button:
+        text: "D"
+        size_hint: None, 1
+        width: "60dp"
+    Button:
+        text: "E"
+    Button:
+        text: "F"
+
+
+<AnchorLayoutExample>:
+    # right, left, center (center is default)
+    anchor_x: "center"
+    # bottom, top, center (center is default)
+    anchor_y: "top"
+    BoxLayout:
+        size_hint: .2, .2
+        Button:
+            text: "A"
+        Button:
+            text: "B"
+
+
+<BoxLayoutExample>:
+    orientation: "horizontal"
+    Button:
+        text: "A"
+        #size: "40dp", "40dp" # ignored (see below)
+        #size_hint: 1, .5 # scalable/percentage (width, height)
+        size_hint: .5, .5 # (None, None) for manual height
+        #width: "100dp"
+        height: "60dp"
+        # Below are props used in pos_hint
+        # x, center_x, right
+        # y, center_y, top
+        pos_hint: { "y": .25 } # also reqs. size_hint
+    BoxLayout:
+        orientation: "vertical"
+        spacing: "10dp"
+        Button:
+            text: "B1"
+        Button:
+            text: "B2"
+        Button:
+            text: "B3"
+        Button:
+            text: "B4"
+    Label:
+        text: "C"
+
+
+<MainWidget>:
+    Button:
+        text: "Hello"
+        size: "100dp", "80dp"
+        pos: "100dp", "200dp" # x, y
+        color: "#32a852" # r,g,b,a
+    Label:
+        text: "Hello2"
+        size: "100dp", "80dp"
+        pos: "200dp", "300dp"
+        color: 1, 0, 0, 1 # r,g,b,a
