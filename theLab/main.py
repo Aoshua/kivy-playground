@@ -9,14 +9,35 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.stacklayout import StackLayout
 from kivy.metrics import dp
 from kivy.properties import StringProperty
+from kivy.properties import BooleanProperty
 
 
 class WidgetsExample(GridLayout):
-    count = 1
+    count = 0
     my_text = StringProperty(str(count))
+    enable_click = BooleanProperty(False)
+    #slider_text = StringProperty('50')
+
     def on_button_click(self):
-        self.count += 1
-        self.my_text = str(self.count)
+        if self.enable_click:
+            self.count += 1
+            self.my_text = str(self.count)
+
+    def on_toggle_button_state(self, toggle_btn):
+        print("toggle state: " + toggle_btn.state)
+        if toggle_btn.state == "normal":
+            toggle_btn.text = "OFF"
+            self.enable_click = False
+        else:
+            toggle_btn.text = "ON"
+            self.enable_click = True
+
+    def on_switch_active(self, widget):
+        print("Swtich " + str(widget.active))
+
+    # Replaced by adding id to the slider in .kv
+    #def on_slider_value(self, widget):  
+        #self.slider_text = str(int(widget.value))
 
 class StackLayoutExample(StackLayout):
     def __init__(self, **kwargs):

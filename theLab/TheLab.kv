@@ -18,15 +18,38 @@ WidgetsExample:
 
 <WidgetsExample>
     cols: 3
+    ToggleButton:
+        text: "OFF"
+        on_state: root.on_toggle_button_state(self)
+        size_hint: None, 1
+        width: "100dp"
     Button:
         text: "Click here"
         # self refers to GridLayout where root is the WidgetsExample class
         on_press: root.on_button_click()
+        disabled: not root.enable_click
     Label:
         text: root.my_text # this is bound, like vue
         font_name: "fonts/Lcd.ttf"
         font_size: "80dp"
-        color: "#1B998B"
+        color: "#2AE8D2"
+    Switch:
+        id: switch1
+        active: True
+        on_active: root.on_switch_active(self)
+        size_hint: None, 1
+        width: "100dp"
+    Slider:
+        id: my_slider
+        disabled: not switch1.active
+        min: 0
+        max: 100
+        value: 50
+        #on_value: root.on_slider_value(self)
+        orientation: "vertical"
+    Label:
+        text: str(int(my_slider.value))
+    
 
 <PageLayoutExample@PageLayout>:
     MainWidget:
