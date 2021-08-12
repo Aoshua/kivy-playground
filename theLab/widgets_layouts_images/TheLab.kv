@@ -11,12 +11,25 @@
 #AnchorLayoutExample:
 #GridLayoutExample:
 #StackLayoutExample:
-# ScrollViewExample:
+#ScrollViewExample:
 #PageLayoutExample:
-WidgetsExample:
+#WidgetsExample:
+ImageExample:
+
+<ImageExample@GridLayout>:
+    cols: 3
+    Image:
+        source: "images/cake.jpg"
+    Image:
+        source: "images/cake.jpg"
+        allow_stretch: True
+    Image:
+        source: "images/cake.jpg"
+        allow_stretch: True
+        keep_ratio: False
 
 
-<WidgetsExample>
+<WidgetsExample>:
     cols: 3
     ToggleButton:
         text: "OFF"
@@ -47,8 +60,24 @@ WidgetsExample:
         value: 50
         #on_value: root.on_slider_value(self)
         orientation: "vertical"
+    BoxLayout:
+        orientation: "vertical"
+        Label:
+            text: str(int(my_slider.value))
+        ProgressBar:
+            max: 100
+            # min is always 100, cannot be changed
+            value: my_slider.value
+    TextInput:
+        id: my_text_input
+        size_hint: None, 1
+        width: "100dp"
+        text: "foo"
+        multiline: False
+        on_text_validate: root.on_text_validate(self)
     Label:
-        text: str(int(my_slider.value))
+        text: "Your name is: " + root.text_input_str
+
     
 
 <PageLayoutExample@PageLayout>:

@@ -17,6 +17,7 @@ class WidgetsExample(GridLayout):
     my_text = StringProperty(str(count))
     enable_click = BooleanProperty(False)
     #slider_text = StringProperty('50')
+    text_input_str = StringProperty("foo")
 
     def on_button_click(self):
         if self.enable_click:
@@ -39,6 +40,10 @@ class WidgetsExample(GridLayout):
     #def on_slider_value(self, widget):  
         #self.slider_text = str(int(widget.value))
 
+    def on_text_validate(self, widget):
+        self.text_input_str = widget.text
+
+
 class StackLayoutExample(StackLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -49,12 +54,14 @@ class StackLayoutExample(StackLayout):
             b = Button(text=str(i+1), size_hint=(None, None), size=(size, size))
             self.add_widget(b)
 
+
 # Instead, we are defining this straight in the .kv
 # class GridLayoutExample(GridLayout):
 #     pass
 
 class AnchorLayoutExample(AnchorLayout):
     pass
+
 
 class BoxLayoutExample(BoxLayout):
     # def __init__(self, **kwargs): # kivy constructors req. kwargs for internal operations
@@ -71,6 +78,7 @@ class BoxLayoutExample(BoxLayout):
 
 class MainWidget(Widget):
     pass
+
 
 class TheLabApp(App):
     pass
