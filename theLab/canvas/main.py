@@ -71,7 +71,8 @@ class BouncyBall(Widget):
         # print("on size: " + str(self.width) + ", " +str(self.height))
         self.ball.pos = (self.center_x - self.ballSize/2, self.center_y - self.ballSize/2)
 
-
+class CanvasExample6(Widget):
+    pass
 
 class CanvasApp(App):
     pass

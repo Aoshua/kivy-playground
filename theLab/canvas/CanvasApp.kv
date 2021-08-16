@@ -3,7 +3,57 @@
 # CanvasExample1:
 # CanvasExample2:
 # CanvasExample3:
-BouncyBall:
+# BouncyBall:
+# CanvasExample6:
+CanvasExample7:
+
+<CanvasExample7@BoxLayout>:
+    RelativeLayout:
+        canvas:
+            Color:
+                rgb: 0, 0, 1
+            Rectangle:
+                size: self.size
+    RelativeLayout:
+        canvas:
+            Color:
+                rgb: 1, 1, 1
+            Rectangle:
+                size: self.size
+    RelativeLayout:
+        canvas:
+            Color:
+                rgb: 1, 0, 0
+            Rectangle:
+                size: self.size
+
+
+<CanvasExample6>:
+    # Button:
+    #     canvas: 
+    #         #.before move the canvas under the button
+    #         Rectangle:
+    #     text: "A"
+    #     pos: 100, 100
+
+    # Below, with/without setting size makes a big difference
+    # because CanvasExample6 inherits Widget not Layout
+    BoxLayout:
+        size: root.size
+        Widget:
+            canvas:
+                Color: 
+                    rgb: 0, 1, 0
+                Rectangle:
+                    size: self.size #self being widget
+        RelativeLayout:
+            canvas:
+                Color: 
+                    rgb: 0, 0, 1
+                Rectangle:
+                    size: self.size #self being widget
+                    #pos: self.pos #need if nested in a Widget (rather than RelativeLayout)
+
 
 <CanvasExample1@Widget>:
     canvas:
