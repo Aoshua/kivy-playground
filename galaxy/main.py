@@ -19,8 +19,11 @@ class MainWidget(Widget):
     H_LINE_SPACING = .1 #% of screen height
     horizontalLines = []
 
-    SPEED = 2
+    SPEED = 1.5
     currentYOffset = 0
+
+    SPEED_X = 1.5
+    currentXOffset = 0
 
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
@@ -86,7 +89,7 @@ class MainWidget(Widget):
 
     def transform(self, x, y):
         return self.transform_3D(x, y)
-        # return self.transform_2D(x, y)
+        #return self.transform_2D(x, y)
 
     def transform_3D(self, x, y):
         yLinear = (y * self.yPerspective) / self.height
@@ -103,10 +106,13 @@ class MainWidget(Widget):
         yTransform = self.yPerspective - (yFactor * self.yPerspective)
         return int(xTransform), int(yTransform)
 
-    def update(self, dt): # dt for delta time
+    def update(self, dt): 
+        # dt for delta time, which is useful to ensure that processing
+        # speeds do not interfere with our fps (see timeFactor).
+        timeFactor = dt * 60
         self.update_vertical_lines()
         self.update_horizontal_lines()
-        self.currentYOffset += self.SPEED
+        self.currentYOffset += self.SPEED * timeFactor
 
         ySpacing = self.H_LINE_SPACING * self.height
         if self.currentYOffset >= ySpacing:
