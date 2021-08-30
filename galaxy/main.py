@@ -9,6 +9,8 @@ from kivy.properties import NumericProperty
 from kivy.graphics.context_instructions import Color
 from kivy.graphics.vertex_instructions import Line
 from kivy.properties import Clock
+from kivy.core.window import Window
+from kivy import platform
 
 # kivy.graphics.vertex_instructions.Line(VertexInstruction)
 
@@ -27,14 +29,32 @@ class MainWidget(Widget):
     SPEED_Y = 1.5
     currentYOffset = 0
 
-    SPEED_X = 1.5
+    SPEED_X = 12
+    currentXSpeed = 0
     currentXOffset = 0
 
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
         self.init_vertical_lines()
         self.init_horizontal_lines()
+
+        # attach keyboard listeners:
+        if self.is_desktop():
+            self._keyboard = Window.request_keyboard(self.keyboard_closed, self)
+            self._keyboard.bind(on_key_down=self.on_keyboard_down)
+            self._keyboard.bind(on_key_up=self.on_keyboard_up)
+
         Clock.schedule_interval(self.update, 1.0 / 60.0) # 60fps
+
+    def keyboard_closed(self):
+        self._keyboard.unbind(on_key_down=self.on_keyboard_down)
+        self._keyboard.unbind(on_key_up=self.on_keyboard_up)
+        self._keyboard = None
+
+    def is_desktop(self):
+        if platform in ('linux', 'win', 'macosx'):
+            return True
+        return False
 
     # Called when the widget is attached to the parent
     def on_parent(self, widget, parent): 
@@ -111,6 +131,9 @@ class MainWidget(Widget):
         yTransform = self.yPerspective - (yFactor * self.yPerspective)
         return int(xTransform), int(yTransform)
 
+    def transform_2D(self, x, y):
+        return int(x), int(y)
+
     def update(self, dt): 
         # dt for delta time, which is useful to ensure that processing
         # speeds do not interfere with our fps (see timeFactor).
@@ -123,10 +146,26 @@ class MainWidget(Widget):
         if self.currentYOffset >= ySpacing:
             self.currentYOffset -= ySpacing
 
-        self.currentXOffset += self.SPEED_X * timeFactor
+        self.currentXOffset += self.currentXSpeed * timeFactor
 
-    def transform_2D(self, x, y):
-        return int(x), int(y)
+    def on_touch_down(self, touch):
+        if touch.x < self.width / 2:
+            self.currentXSpeed = self.SPEED_X
+        else:
+            self.currentXSpeed = -self.SPEED_X
+
+    def on_touch_up(self, touch):
+        self.currentXSpeed = 0
+
+    def on_keyboard_down(self, keyboard, keycode, text, modifiers):
+        if keycode[1] == 'left':
+            self.currentXSpeed = self.SPEED_X
+        elif keycode[1] == 'right':
+            self.currentXSpeed = -self.SPEED_X
+        return True
+
+    def on_keyboard_up(self, keyboard, keycode):
+        self.currentXSpeed = 0
 
 
 class GalaxyApp(App):
