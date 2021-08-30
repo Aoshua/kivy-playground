@@ -1,3 +1,8 @@
+# The following 3 lines ensure a set inital window height
+from kivy.config import Config
+Config.set('graphics', 'width', '900')
+Config.set('graphics', 'height', '400')
+
 from kivy.app import App
 from kivy.uix.widget import Widget
 from kivy.properties import NumericProperty
@@ -19,7 +24,7 @@ class MainWidget(Widget):
     H_LINE_SPACING = .1 #% of screen height
     horizontalLines = []
 
-    SPEED = 1.5
+    SPEED_Y = 1.5
     currentYOffset = 0
 
     SPEED_X = 1.5
@@ -67,7 +72,7 @@ class MainWidget(Widget):
         spacing = self.V_LINE_SPACING * self.width
         offset = -int(self.V_NUM_LINES/2)+0.5 #0.5 to make center space center
         for i in range(0, self.V_NUM_LINES):
-            lineX = centerLineX + (offset*spacing)
+            lineX = centerLineX + (offset*spacing) + self.currentXOffset
             x1, y1 = self.transform(lineX, 0)
             x2, y2 = self.transform(lineX, self.height)
             self.verticalLines[i].points = [x1, y1, x2, y2]
@@ -78,8 +83,8 @@ class MainWidget(Widget):
         spacing = self.V_LINE_SPACING * self.width
         offset = -int(self.V_NUM_LINES/2)+0.5 #0.5 to make center space center
 
-        xMin = centerLineX + offset*spacing
-        xMax = centerLineX - offset*spacing
+        xMin = centerLineX + offset*spacing + self.currentXOffset
+        xMax = centerLineX - offset*spacing + self.currentXOffset
         ySpacing = self.H_LINE_SPACING * self.height
         for i in range(0, self.H_NUM_LINES):
             lineY = i * ySpacing - self.currentYOffset
@@ -112,11 +117,13 @@ class MainWidget(Widget):
         timeFactor = dt * 60
         self.update_vertical_lines()
         self.update_horizontal_lines()
-        self.currentYOffset += self.SPEED * timeFactor
+        self.currentYOffset += self.SPEED_Y * timeFactor
 
         ySpacing = self.H_LINE_SPACING * self.height
         if self.currentYOffset >= ySpacing:
             self.currentYOffset -= ySpacing
+
+        self.currentXOffset += self.SPEED_X * timeFactor
 
     def transform_2D(self, x, y):
         return int(x), int(y)
