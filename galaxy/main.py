@@ -15,6 +15,9 @@ from kivy import platform
 # kivy.graphics.vertex_instructions.Line(VertexInstruction)
 
 class MainWidget(Widget):
+    from transforms import transform_2D, transform_3D
+    from userActions import keyboard_closed, on_keyboard_up, on_keyboard_down, on_touch_up, on_touch_down
+
     xPerspective = NumericProperty(0)
     yPerspective = NumericProperty(0)
     
@@ -46,34 +49,14 @@ class MainWidget(Widget):
 
         Clock.schedule_interval(self.update, 1.0 / 60.0) # 60fps
 
-    def keyboard_closed(self):
-        self._keyboard.unbind(on_key_down=self.on_keyboard_down)
-        self._keyboard.unbind(on_key_up=self.on_keyboard_up)
-        self._keyboard = None
-
     def is_desktop(self):
         if platform in ('linux', 'win', 'macosx'):
             return True
         return False
 
-    # Called when the widget is attached to the parent
-    def on_parent(self, widget, parent): 
-        pass
-
-    # Called on initally sizing the window, and when window size changes
-    def on_size(self, *args): 
-        # self.update_vertical_lines()
-        # self.update_horizontal_lines()
-        pass
-
-    # All class properties have this form of on change function:
-    def on_xPerspective(self, widget, value):
-        # print("PX: " + str(value))
-        pass
-
-    def on_yPerspective(self, widget, value):
-        # print("PY: " + str(value))
-        pass
+    def transform(self, x, y):
+        return self.transform_3D(x, y)
+        #return self.transform_2D(x, y)
 
     def init_vertical_lines(self):
         with self.canvas:
@@ -112,28 +95,6 @@ class MainWidget(Widget):
             x2, y2 = self.transform(xMax, lineY)
             self.horizontalLines[i].points = [x1, y1, x2, y2]
 
-    def transform(self, x, y):
-        return self.transform_3D(x, y)
-        #return self.transform_2D(x, y)
-
-    def transform_3D(self, x, y):
-        yLinear = (y * self.yPerspective) / self.height
-        if yLinear > self.yPerspective: # can't go above
-            yLinear = self.yPerspective
-
-        xDiff = x - self.xPerspective
-        yDiff = self.yPerspective - yLinear
-
-        yFactor = yDiff / self.yPerspective
-        yFactor = pow(yFactor, 3)
-
-        xTransform = self.xPerspective + (xDiff * yFactor)
-        yTransform = self.yPerspective - (yFactor * self.yPerspective)
-        return int(xTransform), int(yTransform)
-
-    def transform_2D(self, x, y):
-        return int(x), int(y)
-
     def update(self, dt): 
         # dt for delta time, which is useful to ensure that processing
         # speeds do not interfere with our fps (see timeFactor).
@@ -148,27 +109,29 @@ class MainWidget(Widget):
 
         self.currentXOffset += self.currentXSpeed * timeFactor
 
-    def on_touch_down(self, touch):
-        if touch.x < self.width / 2:
-            self.currentXSpeed = self.SPEED_X
-        else:
-            self.currentXSpeed = -self.SPEED_X
-
-    def on_touch_up(self, touch):
-        self.currentXSpeed = 0
-
-    def on_keyboard_down(self, keyboard, keycode, text, modifiers):
-        if keycode[1] == 'left':
-            self.currentXSpeed = self.SPEED_X
-        elif keycode[1] == 'right':
-            self.currentXSpeed = -self.SPEED_X
-        return True
-
-    def on_keyboard_up(self, keyboard, keycode):
-        self.currentXSpeed = 0
-
 
 class GalaxyApp(App):
     pass
 
 GalaxyApp().run()
+
+#### Below we have example code that could be helpful for future reference: ####
+
+# # Called when the widget is attached to the parent
+# def on_parent(self, widget, parent): 
+#     pass
+
+# # Called on initally sizing the window, and when window size changes
+# def on_size(self, *args): 
+#     # self.update_vertical_lines()
+#     # self.update_horizontal_lines()
+#     pass
+
+# # All class properties have this form of on change function:
+# def on_xPerspective(self, widget, value):
+#     # print("PX: " + str(value))
+#     pass
+
+# def on_yPerspective(self, widget, value):
+#     # print("PY: " + str(value))
+#     pass
