@@ -11,18 +11,19 @@ from kivy.graphics.vertex_instructions import Line
 from kivy.properties import Clock
 from kivy.core.window import Window
 from kivy import platform
+from kivy.graphics.vertex_instructions import Quad
 
 # kivy.graphics.vertex_instructions.Line(VertexInstruction)
 
 class MainWidget(Widget):
-    from transforms import transform_2D, transform_3D
+    from transforms import transform, transform_2D, transform_3D
     from userActions import keyboard_closed, on_keyboard_up, on_keyboard_down, on_touch_up, on_touch_down
 
     xPerspective = NumericProperty(0)
     yPerspective = NumericProperty(0)
     
-    V_NUM_LINES = 10
-    V_LINE_SPACING = .2 #% of screen width
+    V_NUM_LINES = 4
+    V_LINE_SPACING = .1 #% of screen width
     verticalLines = []
 
     H_NUM_LINES = 8
@@ -36,10 +37,15 @@ class MainWidget(Widget):
     currentXSpeed = 0
     currentXOffset = 0
 
+    tile = None
+    tiX = 1
+    tiY = 2
+
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
         self.init_vertical_lines()
         self.init_horizontal_lines()
+        self.init_tiles()
 
         # attach keyboard listeners:
         if self.is_desktop():
@@ -54,10 +60,6 @@ class MainWidget(Widget):
             return True
         return False
 
-    def transform(self, x, y):
-        return self.transform_3D(x, y)
-        #return self.transform_2D(x, y)
-
     def init_vertical_lines(self):
         with self.canvas:
             Color(1, 1, 1)
@@ -69,28 +71,59 @@ class MainWidget(Widget):
             Color(1, 1, 1)
             for i in range(0, self.H_NUM_LINES):
                 self.horizontalLines.append(Line())
+
+    def init_tiles(self):
+        with self.canvas:
+            Color(1, 1, 1)
+            self.tile = Quad()
+
+    def get_line_x_from_index(self, index):
+        centerLineX = self.xPerspective
+        spacing = self.V_LINE_SPACING * self.width
+        offset = index - 0.5
+        lineX = centerLineX + offset*spacing + self.currentXOffset
+        return lineX
+
+    def get_line_y_from_index(self, index):
+        spacing = self.H_LINE_SPACING * self.height
+        lineY = index*spacing - self.currentYOffset
+        return lineY
+
+    def get_tile_coordinates(self, tiX, tiY):
+        x = self.get_line_x_from_index(tiX)
+        y = self.get_line_y_from_index(tiY)
+        return x, y
+
+    def update_tiles(self):
+        xMin, yMin = self.get_tile_coordinates(self.tiX, self.tiY)
+        xMax, yMax = self.get_tile_coordinates(self.tiX + 1, self.tiY + 1)
+        # 2    3
+        #
+        # 1    4
+        x1, y1 = self.transform(xMin, yMin)
+        x2, y2 = self.transform(xMin, yMax)
+        x3, y3 = self.transform(xMax, yMax)
+        x4, y4 = self.transform(xMax, yMin)
+
+        self.tile.points = [x1, y1, x2, y2, x3, y3, x4, y4]
+
     
     def update_vertical_lines(self):
-        centerLineX = int(self.width / 2)
-        spacing = self.V_LINE_SPACING * self.width
-        offset = -int(self.V_NUM_LINES/2)+0.5 #0.5 to make center space center
-        for i in range(0, self.V_NUM_LINES):
-            lineX = centerLineX + (offset*spacing) + self.currentXOffset
+        startIndex = -int(self.V_NUM_LINES / 2) + 1 # -1 0 1 2
+        for i in range(startIndex, startIndex + self.V_NUM_LINES):
+            lineX = self.get_line_x_from_index(i)
             x1, y1 = self.transform(lineX, 0)
             x2, y2 = self.transform(lineX, self.height)
             self.verticalLines[i].points = [x1, y1, x2, y2]
-            offset += 1
-
+    
     def update_horizontal_lines(self):
-        centerLineX = int(self.width / 2)
-        spacing = self.V_LINE_SPACING * self.width
-        offset = -int(self.V_NUM_LINES/2)+0.5 #0.5 to make center space center
+        startIndex = -int(self.V_NUM_LINES / 2) + 1
+        endIndex = startIndex + self.V_NUM_LINES - 1
 
-        xMin = centerLineX + offset*spacing + self.currentXOffset
-        xMax = centerLineX - offset*spacing + self.currentXOffset
-        ySpacing = self.H_LINE_SPACING * self.height
+        xMin = self.get_line_x_from_index(startIndex)
+        xMax = self.get_line_x_from_index(endIndex)
         for i in range(0, self.H_NUM_LINES):
-            lineY = i * ySpacing - self.currentYOffset
+            lineY = self.get_line_y_from_index(i)
             x1, y1 = self.transform(xMin, lineY)
             x2, y2 = self.transform(xMax, lineY)
             self.horizontalLines[i].points = [x1, y1, x2, y2]
@@ -101,13 +134,14 @@ class MainWidget(Widget):
         timeFactor = dt * 60
         self.update_vertical_lines()
         self.update_horizontal_lines()
-        self.currentYOffset += self.SPEED_Y * timeFactor
+        self.update_tiles()
+        # self.currentYOffset += self.SPEED_Y * timeFactor
 
         ySpacing = self.H_LINE_SPACING * self.height
         if self.currentYOffset >= ySpacing:
             self.currentYOffset -= ySpacing
 
-        self.currentXOffset += self.currentXSpeed * timeFactor
+        # self.currentXOffset += self.currentXSpeed * timeFactor
 
 
 class GalaxyApp(App):
