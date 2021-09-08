@@ -3,19 +3,19 @@ def transform(self, x, y):
     return self.transform_3D(x, y)
 
 def transform_3D(self, x, y):
-    yLinear = (y * self.yPerspective) / self.height
-    if yLinear > self.yPerspective: # can't go above
-        yLinear = self.yPerspective
+    y_linear = (y * self.yPerspective) / self.height
+    if y_linear > self.yPerspective: # can't go above
+        y_linear = self.yPerspective
 
-    xDiff = x - self.xPerspective
-    yDiff = self.yPerspective - yLinear
+    x_diff = x - self.xPerspective
+    y_diff = self.yPerspective - y_linear
 
-    yFactor = yDiff / self.yPerspective
-    yFactor = pow(yFactor, 3)
+    y_factor = y_diff / self.yPerspective
+    y_factor = pow(y_factor, 3)
 
-    xTransform = self.xPerspective + (xDiff * yFactor)
-    yTransform = self.yPerspective - (yFactor * self.yPerspective)
-    return int(xTransform), int(yTransform)
+    x_transform = self.xPerspective + (x_diff * y_factor)
+    y_transform = self.yPerspective - (y_factor * self.yPerspective)
+    return int(x_transform), int(y_transform)
 
 def transform_2D(self, x, y):
     return int(x), int(y)
