@@ -141,7 +141,7 @@ class MainWidget(Widget):
         if self.current_y_offset >= ySpacing:
             self.current_y_offset -= ySpacing
 
-        # self.current_x_offset += self.current_x_speed * time_factor
+        self.current_x_offset += self.current_x_speed * time_factor
 
 
 class GalaxyApp(App):
