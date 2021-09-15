@@ -16,6 +16,9 @@ from kivy.graphics.vertex_instructions import Quad
 from kivy.graphics.vertex_instructions import Triangle
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
+from kivy.properties import StringProperty
+from kivy.core.audio import SoundLoader
+from kivy.core.audio import Sound
 import random
 #endregion
 
@@ -63,10 +66,22 @@ class MainWidget(RelativeLayout):
 
     game_over_state = False
     game_started_state = False
+
+    menu_title = StringProperty("G   A   L   A   X   Y")
+    menu_button_title = StringProperty("START")
+    score_text = StringProperty("SCORE: 0")
+
+    sound_begin = None
+    sound_galaxy = None
+    sound_gameover_impact = None
+    sound_gameover_voice = None
+    sound_music1 = None
+    sound_restart = None
     #endregion
 
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
+        self.init_audio()
         self.init_vertical_lines()
         self.init_horizontal_lines()
         self.init_tiles()
@@ -79,13 +94,31 @@ class MainWidget(RelativeLayout):
             self._keyboard.bind(on_key_down=self.on_keyboard_down)
             self._keyboard.bind(on_key_up=self.on_keyboard_up)
 
+        self.sound_galaxy.play()
         Clock.schedule_interval(self.update, 1.0 / 60.0) # 60fps
+
+    def init_audio(self):
+        self.sound_begin = SoundLoader.load("assets/audio/begin.wav")
+        self.sound_galaxy = SoundLoader.load("assets/audio/galaxy.wav")
+        self.sound_gameover_impact = SoundLoader.load("assets/audio/gameover_impact.wav")
+        self.sound_gameover_voice = SoundLoader.load("assets/audio/gameover_voice.wav")
+        self.sound_music1 = SoundLoader.load("assets/audio/music1.wav")
+        self.sound_restart = SoundLoader.load("assets/audio/restart.wav")
+
+        self.sound_music1.volume = 1
+        self.sound_galaxy.volume = .25
+        self.sound_gameover_impact.volume = .6
+        self.sound_gameover_voice.volume = .25
+        self.sound_begin.volume = .25
+        self.sound_restart.volume = .25
 
     def reset_game(self):
         self.current_y_offset = 0
         self.current_y_loop = 0
         self.current_x_offset = 0
         self.current_x_speed = 0
+
+        self.score_text = "SCORE: 0"
 
         self.tiles_coordinates = []
         self.pre_fill_tiles_coordinates()
@@ -274,6 +307,7 @@ class MainWidget(RelativeLayout):
             while self.current_y_offset >= ySpacing:
                 self.current_y_offset -= ySpacing
                 self.current_y_loop += 1
+                self.score_text = "SCORE: " + str(self.current_y_loop)
                 self.generate_tiles_coordinates()
             
             speed_x = (self.current_x_speed * self.width) / 100
@@ -282,8 +316,23 @@ class MainWidget(RelativeLayout):
         if not self.check_ship_collision() and not self.game_over_state:
             self.game_over_state = True
             self.menu_widget.opacity = 1
+            self.menu_title = "G  A  M  E    O  V  E  R"
+            self.menu_button_title = "RESTART"
+            self.sound_gameover_impact.play()
+            self.sound_music1.stop()
+            Clock.schedule_once(self.play_gameover_voice_sound, 1)
+            
+    def play_gameover_voice_sound(self, dt):
+        if self.game_over_state:
+            self.sound_gameover_voice.play()
 
     def on_menu_button_pressed(self):
+        if self.game_over_state:
+            self.sound_restart.play()
+        else:
+            self.sound_begin.play()
+        self.sound_music1.play()
+
         self.reset_game()
         self.game_started_state = True
         self.menu_widget.opacity = 0
