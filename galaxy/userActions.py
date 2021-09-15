@@ -1,8 +1,13 @@
+from kivy.uix.relativelayout import RelativeLayout
+
+
 def on_touch_down(self, touch):
-    if touch.x < self.width / 2:
-        self.current_x_speed = self.SPEED_X
-    else:
-        self.current_x_speed = -self.SPEED_X
+    if not self.game_over_state and self.game_started_state:
+        if touch.x < self.width / 2:
+            self.current_x_speed = self.SPEED_X
+        else:
+            self.current_x_speed = -self.SPEED_X
+    return super(RelativeLayout, self).on_touch_down(touch)
 
 def on_touch_up(self, touch):
     self.current_x_speed = 0

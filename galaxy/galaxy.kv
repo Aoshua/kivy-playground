@@ -1,7 +1,11 @@
 #:kivy 2.0.0
+#:import menu menu
 
 MainWidget:
 
 <MainWidget>:
-    xPerspective: self.width/2
-    yPerspective: self.height*0.75
+    menu_widget: menu_widget
+    xPerspective: self.width / 2
+    yPerspective: self.height * 0.75
+    MenuWidget:
+        id: menu_widget
