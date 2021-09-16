@@ -20,7 +20,10 @@ from kivy.properties import StringProperty
 from kivy.core.audio import SoundLoader
 from kivy.core.audio import Sound
 import random
+import os, sys
 #endregion
+
+os.environ['KIVY_IMAGE'] = 'pil,sdl2'
 
 #region File Imports
 Builder.load_file("menu.kv")
@@ -33,8 +36,8 @@ class MainWidget(RelativeLayout):
     #endregion
 
     #region Properties
-    root_path = StringProperty("")
-    package_name = 'galaxy'
+    # root_path = StringProperty("")
+    # package_name = 'galaxy'
 
     menu_widget = ObjectProperty()
 
@@ -84,7 +87,7 @@ class MainWidget(RelativeLayout):
 
     def __init__(self, **kwargs):
         super(MainWidget, self).__init__(**kwargs)
-        self.determine_os_file_pathing()
+        # self.determine_os_file_pathing()
         self.init_audio()
         self.init_vertical_lines()
         self.init_horizontal_lines()
@@ -101,18 +104,30 @@ class MainWidget(RelativeLayout):
         self.sound_galaxy.play()
         Clock.schedule_interval(self.update, 1.0 / 60.0) # 60fps
 
-    def determine_os_file_pathing(self):
-        if platform == 'linux':
-            self.root_path = f'/data/data/org.test.{self.package_name}/files/app/'
-        # add support for 'win', 'linux', 'macos', 'ios', and 'unknown' as needed
+    def resource_path(self, relative_path):
+        # Get absolute path to resource, works for dev and for PyInstaller
+        base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+        print('base path:', base_path)
+        return os.path.join(base_path, relative_path)
+
+    # def determine_os_file_pathing(self):
+    #     if platform == 'linux':
+    #         self.root_path = f'/data/data/org.test.{self.package_name}/files/app/'
+    #     # add support for 'win', 'linux', 'macos', 'ios', and 'unknown' as needed
 
     def init_audio(self):
-        self.sound_begin = SoundLoader.load(f"{self.root_path}assets/audio/begin.wav")
-        self.sound_galaxy = SoundLoader.load(f"{self.root_path}assets/audio/galaxy.wav")
-        self.sound_gameover_impact = SoundLoader.load(f"{self.root_path}assets/audio/gameover_impact.wav")
-        self.sound_gameover_voice = SoundLoader.load(f"{self.root_path}assets/audio/gameover_voice.wav")
-        self.sound_music1 = SoundLoader.load(f"{self.root_path}assets/audio/music1.wav")
-        self.sound_restart = SoundLoader.load(f"{self.root_path}assets/audio/restart.wav")
+        # self.sound_begin = SoundLoader.load(f"{self.root_path}assets/audio/begin.wav")
+        # self.sound_galaxy = SoundLoader.load(f"{self.root_path}assets/audio/galaxy.wav")
+        # self.sound_gameover_impact = SoundLoader.load(f"{self.root_path}assets/audio/gameover_impact.wav")
+        # self.sound_gameover_voice = SoundLoader.load(f"{self.root_path}assets/audio/gameover_voice.wav")
+        # self.sound_music1 = SoundLoader.load(f"{self.root_path}assets/audio/music1.wav")
+        # self.sound_restart = SoundLoader.load(f"{self.root_path}assets/audio/restart.wav")
+        self.sound_begin = SoundLoader.load(self.resource_path("assets/audio/begin.wav"))
+        self.sound_galaxy = SoundLoader.load(self.resource_path("assets/audio/galaxy.wav"))
+        self.sound_gameover_impact = SoundLoader.load(self.resource_path("assets/audio/gameover_impact.wav"))
+        self.sound_gameover_voice = SoundLoader.load(self.resource_path("assets/audio/gameover_voice.wav"))
+        self.sound_music1 = SoundLoader.load(self.resource_path("assets/audio/music1.wav"))
+        self.sound_restart = SoundLoader.load(self.resource_path("assets/audio/restart.wav"))
 
         self.sound_music1.volume = 1
         self.sound_galaxy.volume = .25
