@@ -1,0 +1,11 @@
+#:kivy 2.0.0
+
+RootWidget:
+
+<RootWidget>:
+    Label:
+        text: root.post_title
+    Button:
+        text: "Send Request"
+        size_hint: .08, .05
+        on_press: root.on_request_btn_pressed()
