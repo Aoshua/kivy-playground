@@ -35,7 +35,7 @@ class MainWidget(RelativeLayout):
 
     xPerspective = NumericProperty(0)
     yPerspective = NumericProperty(0)
-    
+
     V_NUM_LINES = 10
     V_LINE_SPACING = .2 # % of screen width
     vertical_lines = []
@@ -44,7 +44,7 @@ class MainWidget(RelativeLayout):
     H_LINE_SPACING = .1 # % of screen height
     horizontal_lines = []
 
-    SPEED_Y = 0.6
+    SPEED_Y = 0.5
     current_y_offset = 0
     current_y_loop = 0
 
@@ -59,6 +59,7 @@ class MainWidget(RelativeLayout):
     SHIP_WIDTH = .1 # % of screen width
     SHIP_HEIGHT = 0.035 # % of screen height
     SHIP_BASE_Y = 0.04 # % of screen width
+    ship_shadow = None
     ship = None
     ship_coordinates = [(0, 0), (0, 0), (0, 0)]
 
@@ -133,6 +134,8 @@ class MainWidget(RelativeLayout):
         with self.canvas:
             Color(0, 0, 0)
             self.ship = Triangle()
+            Color(0, 0, 0, .2)
+            self.ship_shadow = Triangle()
 
     def update_ship(self):
         x_center = self.width / 2
@@ -149,6 +152,10 @@ class MainWidget(RelativeLayout):
         x2, y2 = self.transform(*self.ship_coordinates[1])
         x3, y3 = self.transform(*self.ship_coordinates[2])
         self.ship.points = [x1, y1, x2, y2, x3, y3]
+
+        shadow_offset = -10.5
+        self.ship_shadow.points = [x1, y1 + shadow_offset, x2, 
+            y2 + shadow_offset, x3, y3 + shadow_offset]
 
     def check_ship_collision(self):
         for i in range(len(self.tiles_coordinates)):
@@ -198,7 +205,7 @@ class MainWidget(RelativeLayout):
         for i in range(len(self.tiles_coordinates)-1, -1, -1):
             if self.tiles_coordinates[i][1] < self.current_y_loop:
                     del self.tiles_coordinates[i]
-        
+
         if len(self.tiles_coordinates) > 0:
             last_coordinates = self.tiles_coordinates[-1]
             last_x = last_coordinates[0]
@@ -219,7 +226,7 @@ class MainWidget(RelativeLayout):
                 r = 2
 
             self.tiles_coordinates.append((last_x, last_y))
-               
+
             if r == 1:
                 last_x += 1
                 self.tiles_coordinates.append((last_x, last_y))
@@ -267,7 +274,7 @@ class MainWidget(RelativeLayout):
 
             tile.points = [x1, y1, x2, y2, x3, y3, x4, y4]
 
-    
+
     def update_vertical_lines(self):
         start_index = -int(self.V_NUM_LINES / 2) + 1 # -1 0 1 2
         for i in range(start_index, start_index + self.V_NUM_LINES):
@@ -275,7 +282,7 @@ class MainWidget(RelativeLayout):
             x1, y1 = self.transform(line_x, 0)
             x2, y2 = self.transform(line_x, self.height)
             self.vertical_lines[i].points = [x1, y1, x2, y2]
-    
+
     def update_horizontal_lines(self):
         start_index = -int(self.V_NUM_LINES / 2) + 1
         end_index = start_index + self.V_NUM_LINES - 1
@@ -288,7 +295,7 @@ class MainWidget(RelativeLayout):
             x2, y2 = self.transform(x_max, line_y)
             self.horizontal_lines[i].points = [x1, y1, x2, y2]
 
-    def update(self, dt): 
+    def update(self, dt):
         # dt for delta time, which is useful to ensure that processing
         # speeds do not interfere with our fps (see time_factor).
         time_factor = dt * 60
@@ -307,7 +314,7 @@ class MainWidget(RelativeLayout):
                 self.current_y_loop += 1
                 self.score_text = "SCORE: " + str(self.current_y_loop)
                 self.generate_tiles_coordinates()
-            
+
             speed_x = (self.current_x_speed * self.width) / 100
             self.current_x_offset += speed_x * time_factor
 
@@ -319,7 +326,7 @@ class MainWidget(RelativeLayout):
             self.sound_gameover_impact.play()
             self.sound_music1.stop()
             Clock.schedule_once(self.play_gameover_voice_sound, 1)
-            
+
     def play_gameover_voice_sound(self, dt):
         if self.game_over_state:
             self.sound_gameover_voice.play()
@@ -344,11 +351,11 @@ GalaxyApp().run()
 #### Below we have example code that could be helpful for future reference: ####
 
 # # Called when the widget is attached to the parent
-# def on_parent(self, widget, parent): 
+# def on_parent(self, widget, parent):
 #     pass
 
 # # Called on initally sizing the window, and when window size changes
-# def on_size(self, *args): 
+# def on_size(self, *args):
 #     # self.update_vertical_lines()
 #     # self.update_horizontal_lines()
 #     pass
