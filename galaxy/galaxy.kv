@@ -7,7 +7,7 @@ MainWidget:
     canvas.before:
         Rectangle:
             size: self.size
-            source: root.resource_path('assets/images/bg1.jpg')
+            source: 'assets/images/bg1.jpg'
     menu_widget: menu_widget
     xPerspective: self.width / 2
     yPerspective: self.height * 0.75
@@ -16,6 +16,6 @@ MainWidget:
     Label:
         text: root.score_text
         font_size: dp(20)
-        font_name: root.resource_path('assets/fonts/Eurostile.ttf')
+        font_name: 'assets/fonts/Eurostile.ttf'
         size_hint: .15, .15
         pos_hint: { "x": 0, "top": 1}
