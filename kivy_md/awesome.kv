@@ -18,7 +18,7 @@ Screen:
             size_hint_y: None
             height: self.texture_size[1]
             padding_y: dp(15)
-        MDTextFieldRound:
+        MDTextField:
             id: user
             hint_text: "username"
             icon_right: "account"
@@ -26,7 +26,7 @@ Screen:
             width: "200dp"
             font_size: dp(18)
             pos_hint: {"center_x": 0.5}
-        MDTextFieldRound:
+        MDTextField:
             id: password
             hint_text: "password"
             icon_right: "eye-off"
@@ -35,16 +35,14 @@ Screen:
             font_size: dp(18)
             pos_hint: {"center_x": 0.5}
             password: True
-        MDRoundFlatButton:
+        MDRectangleFlatButton:
             text: "LOGIN"
             font_size: dp(12)
             pos_hint: {"center_x": .5}
             on_press: app.logger()
-        MDRoundFlatButton:
+        MDRectangleFlatButton:
             text: "CLEAR"
             font_size: dp(12)
             pos_hint: {"center_x": .5}
             on_press: app.clear()
-        Widget:
-            size_hint_y: None
-            height: dp(10)
+        
