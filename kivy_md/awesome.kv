@@ -1,48 +1,105 @@
 #:kivy 2.0.0
 
-Screen:
+<LoginScreen>:
+    Screen:
+        MDCard:
+            size_hint: None, None
+            size: dp(300), dp(400)
+            pos_hint: {"center_x": .5, "center_y": .5 }
+            elevation: 10
+            padding: dp(25)
+            spacing: dp(25)
+            orientation: "vertical"
+            MDLabel:
+                id: welcome_label
+                text: "LOGIN"
+                font_size: dp(40)
+                halign: 'center'
+                size_hint_y: None
+                height: self.texture_size[1]
+                padding_y: dp(15)
+            MDTextField:
+                id: user
+                hint_text: "username"
+                icon_right: "account"
+                size_hint_x: None
+                width: "200dp"
+                font_size: dp(18)
+                pos_hint: {"center_x": 0.5}
+            MDTextField:
+                id: password
+                hint_text: "password"
+                icon_right: "eye-off"
+                size_hint_x: None
+                width: "200dp"
+                font_size: dp(18)
+                pos_hint: {"center_x": 0.5}
+                password: True
+            # AnchorLayout:
+            #     anchor_x: 'center'
+            #     anchor_y: 'center'
+            #     BoxLayout:
+            #         spacing: dp(10)
+            MDRectangleFlatButton:
+                text: "SIGN IN"
+                font_size: dp(12)
+                pos_hint: {"center_x": .5}
+                on_press: root.sign_in()
+                    # root.manager.transition.direction = 'left'
+                    # root.manager.current = 'dashboard'
+            MDRectangleFlatButton:
+                text: "REGISTER"
+                font_size: dp(12)
+                pos_hint: {"center_x": .5}
 
-    MDCard:
-        size_hint: None, None
-        size: dp(300), dp(400)
-        pos_hint: {"center_x": .5, "center_y": .5 }
-        elevation: 10
-        padding: dp(25)
-        spacing: dp(25)
-        orientation: "vertical"
-        MDLabel:
-            id: welcome_label
-            text: "WELCOME"
-            font_size: dp(40)
-            halign: 'center'
-            size_hint_y: None
-            height: self.texture_size[1]
-            padding_y: dp(15)
-        MDTextField:
-            id: user
-            hint_text: "username"
-            icon_right: "account"
-            size_hint_x: None
-            width: "200dp"
-            font_size: dp(18)
-            pos_hint: {"center_x": 0.5}
-        MDTextField:
-            id: password
-            hint_text: "password"
-            icon_right: "eye-off"
-            size_hint_x: None
-            width: "200dp"
-            font_size: dp(18)
-            pos_hint: {"center_x": 0.5}
-            password: True
-        MDRectangleFlatButton:
-            text: "LOGIN"
-            font_size: dp(12)
-            pos_hint: {"center_x": .5}
-            on_press: app.logger()
-        MDRectangleFlatButton:
-            text: "CLEAR"
-            font_size: dp(12)
-            pos_hint: {"center_x": .5}
-            on_press: app.clear()
-        
+<DashboardScreen>:
+    BoxLayout:
+        Screen:
+            MDCard:
+                size_hint: None, None
+                size: dp(200), dp(250)
+                pos_hint: {"center_x": .5, "center_y": .5 }
+                elevation: 10
+                padding: dp(25)
+                spacing: dp(25)
+                orientation: "vertical"
+                Label:
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'center'
+                    text: '"From the ashes a fire shall be woken, A light from the shadows shall spring; Renewed shall be blade that was broken, The crownless again shall be king."'
+        Screen:
+            MDCard:
+                size_hint: None, None
+                size: dp(200), dp(250)
+                pos_hint: {"center_x": .5, "center_y": .5 }
+                elevation: 10
+                padding: dp(25)
+                spacing: dp(25)
+                orientation: "vertical"
+                Label:
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'center'
+                    text: '"All we have to decide is what to do with the time that is given us."'
+        Screen:
+            MDCard:
+                size_hint: None, None
+                size: dp(200), dp(250)
+                pos_hint: {"center_x": .5, "center_y": .5 }
+                elevation: 10
+                padding: dp(25)
+                spacing: dp(25)
+                orientation: "vertical"
+                Label:
+                    text_size: self.size
+                    halign: 'center'
+                    valign: 'center'
+                    text: '"Faithless is he that says farewell when the road darkens."'
+                MDRectangleFlatButton:
+                    text: "SIGN OUT"
+                    font_size: dp(12)
+                    pos_hint: {"center_x": .5, "center_y": .5}
+                    on_press: 
+                        root.manager.transition.direction = 'right'
+                        root.manager.current = 'login'
