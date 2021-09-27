@@ -52,7 +52,7 @@ requirements = python3,kivy==2.0.0,kivymd==0.104.2,pygments,sdl2_ttf==2.0.15,pil
 #icon.filename = %(source.dir)s/data/icon.png
 
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
-orientation = portrait
+orientation = all
 
 # (list) List of service to declare
 #services = NAME:ENTRYPOINT_TO_PY,NAME2:ENTRYPOINT2_TO_PY
